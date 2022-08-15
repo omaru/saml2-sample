@@ -1,11 +1,15 @@
 package com.github.omaru.saml2.config;
 
+import org.opensaml.security.x509.X509Support;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.saml2.core.Saml2X509Credential;
+import org.springframework.security.saml2.provider.service.registration.InMemoryRelyingPartyRegistrationRepository;
+import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistration;
+import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.security.cert.X509Certificate;
 
@@ -21,10 +25,6 @@ public class SecurityConfig {
                                 .permitAll()
                                 .anyRequest().authenticated()
                 ).saml2Login();
-        // add auto-generation of ServiceProvider Metadata
-        Converter<HttpServletRequest, RelyingPartyRegistration> relyingPartyRegistrationResolver = new DefaultRelyingPartyRegistrationResolver(relyingPartyRegistrationRepository);
-        Saml2MetadataFilter filter = new Saml2MetadataFilter(relyingPartyRegistrationResolver, new OpenSamlMetadataResolver());
-        http.addFilterBefore(filter, Saml2WebSsoAuthenticationFilter.class);
         return http.build();
     }
 
@@ -34,7 +34,7 @@ public class SecurityConfig {
         final File verificationKey = new File(classLoader.getResource("saml2/okta.crt").getFile());
         final X509Certificate certificate = X509Support.decodeCertificate(verificationKey);
         final Saml2X509Credential credential = Saml2X509Credential.verification(certificate);
-        final RelyingPartyRegistrations registration = RelyingPartyRegistration
+        final RelyingPartyRegistration registration = RelyingPartyRegistration
                 .withRegistrationId("okta-saml")
                 .assertingPartyDetails(party -> party
                         .entityId("http://www.okta.com/exk6sni93NCyDl9VP5d6")
