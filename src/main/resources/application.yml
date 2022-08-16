@@ -1,0 +1,7 @@
+app:
+  saml2Properties:
+    registrationId: okta-saml
+    entityId: http://www.okta.com/exk6621yi7SS40uns5d7
+    ssoServiceLocationURI: https://dev-57191968.okta.com/app/dev-57191968_saml2oktademo_1/exk6621yi7SS40uns5d7/sso/saml
+    certificatePath: saml2/okta.crt
+    signedAuthRequest: false
