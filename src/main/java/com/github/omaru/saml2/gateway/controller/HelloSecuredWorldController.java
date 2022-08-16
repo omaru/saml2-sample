@@ -6,6 +6,8 @@ import com.github.omaru.saml2.usecase.response.HelloSecuredWorldResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
+import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +23,7 @@ public class HelloSecuredWorldController {
 
     @GetMapping(value = "hello", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<HelloSecuredWorldResponse> hello(final Principal principal) {
+        log.info("Principal is:{}",((Saml2AuthenticatedPrincipal)principal).getAttributes());
         return ResponseEntity.ok(helloSecuredWorld.execute(HelloSecuredWorldRequest.
                 builder().userName(principal.getName()).build()));
     }
